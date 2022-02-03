@@ -10,4 +10,6 @@ import java.util.List;
 public interface FactoriesRepository extends JpaRepository<Factories, Integer> {
 
     List<Factories> findByNameIgnoreCaseContaining(String name);
+
+
 }

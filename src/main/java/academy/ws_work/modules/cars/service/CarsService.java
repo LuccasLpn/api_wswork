@@ -26,6 +26,15 @@ public class CarsService {
         var cars = carsRepository.save(Cars.of(request, factories));
         return CarsResponse.of(cars);
     }
+    public CarsResponse update(CarsRequest request, Integer id){
+        var factories = factoriesService.findById(request.getFactoriesId());
+        var cars = Cars.of(request, factories);
+        cars.setId(id);
+        carsRepository.save(cars);
+        return CarsResponse.of(cars);
+    }
+
+
 
     private void validateCarsDataInformed(CarsRequest request){
         if(isEmpty(request.getFuel())){
@@ -44,12 +53,13 @@ public class CarsService {
             throw new ValidationException("The Cars Year was not informed: ");
         }
     }
-
     private void validateFactoriId(CarsRequest request){
         if(isEmpty(request.getFactoriesId())){
             throw new ValidationException("The Factorie id was not informed: ");
         }
     }
+
+
 
 
 

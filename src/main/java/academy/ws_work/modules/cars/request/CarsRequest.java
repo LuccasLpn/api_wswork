@@ -6,7 +6,6 @@ import lombok.Data;
 public class CarsRequest {
 
     private Integer factoriesId;
-    private String factoriesName;
     private String model;
     private Integer year;
     private String fuel;
