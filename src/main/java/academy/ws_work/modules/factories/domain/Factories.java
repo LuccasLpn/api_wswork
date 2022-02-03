@@ -1,9 +1,11 @@
 package academy.ws_work.modules.factories.domain;
 
 
+import academy.ws_work.modules.factories.request.FactorieRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 
 import javax.persistence.Entity;
@@ -24,4 +26,9 @@ public class Factories {
     private Integer countrycode;
 
 
+    public static Factories of(FactorieRequest request){
+        var factories = new Factories();
+        BeanUtils.copyProperties(request,factories);
+        return factories;
+    }
 }
