@@ -35,13 +35,11 @@ public class FactoriesService {
                 .orElseThrow(()-> new ValidationException("There Factorie for given ID: " + id));
     }
 
-
     public FactorieResponse saveFactorie(FactorieRequest request){
         validateFactorieNameInforme(request);
         var factories = factoriesRepository.save(Factories.of(request));
         return FactorieResponse.of(factories);
     }
-
     public FactorieResponse update(FactorieRequest request, Integer id){
         validateFactorieNameInforme(request);
         var factories = Factories.of(request);
@@ -58,13 +56,21 @@ public class FactoriesService {
         factoriesRepository.deleteById(id);
         return SuccessResponse.create("The Factorie was deleted");
     }
-
     public List<FactorieResponse> findAll() {
         return factoriesRepository
                 .findAll()
                 .stream()
                 .map(FactorieResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public Factories findByName(String name){
+        if (isEmpty(name)){
+            throw new ValidationException("The Factorie Name must be informed: ");
+        }
+        return factoriesRepository.findByNameIgnoreCase(name)
+                .orElseThrow(()-> new ValidationException("There Factorie for given NAME: " + name));
+
     }
 
     private void validateFactorieNameInforme(FactorieRequest request){

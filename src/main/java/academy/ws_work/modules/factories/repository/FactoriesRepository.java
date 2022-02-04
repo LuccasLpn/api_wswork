@@ -5,11 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FactoriesRepository extends JpaRepository<Factories, Integer> {
 
-    List<Factories> findByNameIgnoreCaseContaining(String name);
+    Optional<Factories> findByNameIgnoreCase(String name);
+
 
 
 }

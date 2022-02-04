@@ -26,7 +26,7 @@ public class Cars {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "FACTORY_ID", nullable = false)
+    @JoinColumn(name = "MARCA_ID", nullable = false)
     private Factories factoriesId;
 
     @Column(name = "MODELO")

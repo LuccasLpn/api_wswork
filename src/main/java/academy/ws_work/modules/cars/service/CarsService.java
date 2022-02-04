@@ -13,10 +13,15 @@ import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.impl.IOFileUploadException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +34,9 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @RequiredArgsConstructor
 public class CarsService {
 
-    private final Locale localeBR = new Locale( "pt", "BR" );
-    private final  NumberFormat dinheiroBR = NumberFormat.getCurrencyInstance(localeBR);
-
     private final CarsRepository carsRepository;
     private final FactoriesService factoriesService;
     private final FactoriesRepository factoriesRepository;
-
 
     public CarsResponse saveCars(CarsRequest request){
         validateFactoriId(request);
@@ -59,40 +60,36 @@ public class CarsService {
                 .collect(Collectors.toList());
     }
     public SuccessResponse delete(Integer id){
-        validateInformedId(id);
-        if(carsRepository.existsByFactoriesId(id)){
-            throw new ValidationException("The Factorie does not exists: ");
-        }
         carsRepository.deleteById(id);
         return SuccessResponse.create("The Cars was deleted: ");
     }
-
-    public String upload(MultipartFile file) throws Exception{
-        List<Cars> carList = new ArrayList<>();
-        InputStream inputStream = file.getInputStream();
-        CsvParserSettings settings = new CsvParserSettings();
-        settings.setHeaderExtractionEnabled(true);
-        CsvParser parser = new CsvParser(settings);
-        List<Record> parseAllRecords = parser.parseAllRecords(inputStream);
-
-        parseAllRecords.forEach(record -> {
-            Cars carsRequest = new Cars();
-            Factories factory = factoriesService.findById(Integer.parseInt(record.getString("MARCA_ID")));
-            carsRequest.setId(Integer.parseInt(record.getString("ID")));
-            carsRequest.setFactoriesId(factory);
-            carsRequest.setModel(record.getString("MODELO"));
-            carsRequest.setYear(Integer.parseInt(record.getString("ANO")));
-            carsRequest.setFuel(record.getString("COMBUSTIVEL"));
-            carsRequest.setDoors(Integer.parseInt(record.getString("NUM_PORTAS")));
-            carsRequest.setCost(Double.parseDouble(record.getString("VALOR_FIPE")));
-            carsRequest.setColor(record.getString("COR"));
-            carList.add(carsRequest);
-        });
-
-        carsRepository.saveAll(carList);
-        return "Upload SuccessFull !!!";
+    public String upload(MultipartFile file){
+        try {
+            List<Cars> carList = new ArrayList<>();
+            InputStream inputStream = file.getInputStream();
+            CsvParserSettings settings = new CsvParserSettings();
+            settings.setHeaderExtractionEnabled(true);
+            CsvParser parser = new CsvParser(settings);
+            List<Record> parseAllRecords = parser.parseAllRecords(inputStream);
+            parseAllRecords.forEach(record -> {
+                Factories factoryId = factoriesService.findById(Integer.parseInt(record.getString("MARCA_ID")));
+                Cars build = Cars.builder()
+                        .id(Integer.parseInt(record.getString("ID")))
+                        .factoriesId(factoryId)
+                        .model(record.getString("MODELO"))
+                        .year(Integer.parseInt(record.getString("ANO")))
+                        .fuel(record.getString("COMBUSTIVEL"))
+                        .doors(Integer.parseInt(record.getString("NUM_PORTAS")))
+                        .cost(Double.valueOf(record.getString("VALOR_FIPE")))
+                        .color(record.getString("COR")).build();
+                carList.add(build);
+                carsRepository.saveAll(carList);
+            });
+            return "Upload SuccessFull !!!";
+        }catch (IOException e){
+            throw new ValidationException("");
+        }
     }
-
     private void validateCarsDataInformed(CarsRequest request){
         if(isEmpty(request.getFuel())){
             throw new ValidationException("The Cars fuel was not informed: ");
@@ -115,17 +112,9 @@ public class CarsService {
             throw new ValidationException("The Factorie id was not informed: ");
         }
     }
-
     private void validateInformedId(Integer id){
         if (isEmpty(id)){
             throw new ValidationException("The Cars ID was not informed: ");
         }
     }
-
-
-
-
-
-
-
 }

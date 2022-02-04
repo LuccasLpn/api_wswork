@@ -25,7 +25,6 @@ public class CarsController {
     private final CarsRepository carsRepository;
 
 
-
     @PostMapping(path = "/save")
     public CarsResponse save (@RequestBody CarsRequest request){
 
@@ -46,6 +45,7 @@ public class CarsController {
     public SuccessResponse delete(@PathVariable Integer id){
         return carsService.delete(id);
     }
+
     @PostMapping(path = "/save/upload")
     public String uploadData(@RequestParam("file") MultipartFile file) throws Exception{
         return carsService.upload(file);
