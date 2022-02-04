@@ -5,15 +5,10 @@ import academy.ws_work.modules.cars.repository.CarsRepository;
 import academy.ws_work.modules.cars.request.CarsRequest;
 import academy.ws_work.modules.cars.request.CarsResponse;
 import academy.ws_work.modules.cars.service.CarsService;
-import com.univocity.parsers.common.record.Record;
-import com.univocity.parsers.csv.CsvParser;
-import com.univocity.parsers.csv.CsvParserSettings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,15 +22,14 @@ public class CarsController {
 
     @PostMapping(path = "/save")
     public CarsResponse save (@RequestBody CarsRequest request){
-
         return carsService.saveCars(request);
     }
 
     @PutMapping("/update/{id}")
-    public CarsResponse update(@RequestBody CarsRequest request,
-                                  @PathVariable Integer id) {
+    public CarsResponse update(@RequestBody CarsRequest request,@PathVariable Integer id) {
         return carsService.update(request, id);
     }
+
     @GetMapping(path = "/findAll")
     public List<CarsResponse> findAll(){
         return carsService.findAll();
