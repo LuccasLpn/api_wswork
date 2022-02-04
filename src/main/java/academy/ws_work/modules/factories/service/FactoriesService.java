@@ -67,7 +67,6 @@ public class FactoriesService {
                 .collect(Collectors.toList());
     }
 
-
     private void validateFactorieNameInforme(FactorieRequest request){
         if(isEmpty(request.getName())){
             throw new ValidationException("The Factorie name was not informed");

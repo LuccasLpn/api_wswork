@@ -8,4 +8,6 @@ import org.springframework.stereotype.Service;
 public interface CarsRepository extends JpaRepository <Cars,Integer> {
 
     Boolean existsByFactoriesId(Integer id);
+
+
 }

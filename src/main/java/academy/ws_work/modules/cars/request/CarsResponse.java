@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class CarsResponse {
 
     private Integer id;
-    private FactorieResponse factorie;
+    private FactorieResponse factorieiD;
     private String model;
     private Integer year;
     private String fuel;
@@ -26,7 +26,7 @@ public class CarsResponse {
     public static CarsResponse of(Cars cars){
         return CarsResponse.builder()
                 .id(cars.getId())
-                .factorie(FactorieResponse.of(cars.getFactories()))
+                .factorieiD(FactorieResponse.of(cars.getFactoriesId()))
                 .model(cars.getModel())
                 .year(cars.getYear())
                 .fuel(cars.getFuel())
