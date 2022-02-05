@@ -36,10 +36,10 @@ public class FactoryService {
     }
 
     public void delete(Integer id){
-        validateInformedId(id);
+/*        validateInformedId(id);
         if(validation.existsByFactorieId(id)){
             throw new ValidationException("You cannot delete this Factorie because it's already defined by a Car.");
-        }
+        }*/
         factoryRepository.delete(findByIdOrThrowBadRequestException(id));
     }
 
@@ -52,10 +52,12 @@ public class FactoryService {
     }
 
     public List<Factory> findByName(String name){
+
         return factoryRepository.findByNameIgnoreCase(name);
     }
 
     public List<Factory> listAllFactory(){
+
         return factoryRepository.findAll();
     }
 
