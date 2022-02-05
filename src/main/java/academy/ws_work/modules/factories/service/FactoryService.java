@@ -24,7 +24,7 @@ public class FactoryService {
     private final Validation validation;
 
     public FactoryResponse findByIdResponse(Integer id){
-       return FactoryResponse.of(findById(id));
+        return FactoryResponse.of(findById(id));
     }
 
     public Factory findById(Integer id) {

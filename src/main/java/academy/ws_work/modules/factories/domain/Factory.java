@@ -3,6 +3,7 @@ package academy.ws_work.modules.factories.domain;
 
 import academy.ws_work.modules.factories.request.FactoryRequest;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Factory {
 
     @Id

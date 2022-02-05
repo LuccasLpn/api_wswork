@@ -45,7 +45,6 @@ class FactoryRepositoryTest {
         Assertions.assertThat(factoryUpdate.getId()).isNotNull();
         Assertions.assertThat(factoryUpdate.getId()).isNotNull().isEqualTo(factory.getId());
         Assertions.assertThat(factoryUpdate.getName()).isNotNull().isEqualTo(factory.getName());
-
     }
 
     @Test
