@@ -1,17 +1,14 @@
 package academy.ws_work.modules.factories.domain;
 
 
-import academy.ws_work.modules.factories.request.FactoryRequest;
+import academy.ws_work.modules.cars.domain.Car;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -27,9 +24,5 @@ public class Factory {
     private Integer countrycode;
 
 
-    public static Factory of(FactoryRequest request){
-        var factories = new Factory();
-        BeanUtils.copyProperties(request,factories);
-        return factories;
-    }
+
 }

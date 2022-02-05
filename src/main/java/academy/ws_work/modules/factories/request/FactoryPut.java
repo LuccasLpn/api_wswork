@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class FactoryResponse {
+public class FactoryPut {
 
 
     private Integer id;
@@ -19,9 +19,5 @@ public class FactoryResponse {
     private Integer countrycode;
 
 
-    public static FactoryResponse of(Factory factory){
-        var reponse = new FactoryResponse();
-        BeanUtils.copyProperties(factory, reponse);
-        return reponse;
-    }
+
 }

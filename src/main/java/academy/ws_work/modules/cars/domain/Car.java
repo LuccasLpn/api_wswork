@@ -1,7 +1,7 @@
 package academy.ws_work.modules.cars.domain;
 
-import academy.ws_work.modules.cars.request.CarRequest;
 import academy.ws_work.modules.factories.domain.Factory;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,13 +19,17 @@ public class Car {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "MARCA_ID", nullable = false)
-    private Factory factoryId;
+    @JoinColumn(name = "FACTORY_ID", insertable = false, updatable = false)
+    @JsonIgnore
+    private Factory factory;
+
+    @Column(name = "FACTORY_ID", insertable = false, updatable = false)
+    private Integer factoryId;
 
     @Column(name = "MODELO")
     private String model;
@@ -47,15 +51,9 @@ public class Car {
 
 
 
-    public static Car of(CarRequest request, Factory factory){
-        return Car.builder()
-                .factoryId(factory)
-                .model(request.getModel())
-                .year(request.getYear())
-                .fuel(request.getFuel())
-                .doors(request.getDoors())
-                .cost(request.getCost())
-                .color(request.getColor()).build();
-    }
+
+
+
+
 
 }

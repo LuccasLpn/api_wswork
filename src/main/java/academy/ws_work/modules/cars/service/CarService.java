@@ -1,65 +1,70 @@
 package academy.ws_work.modules.cars.service;
 
-import academy.ws_work.exceptions.SuccessResponse;
 import academy.ws_work.exceptions.ValidationException;
 import academy.ws_work.modules.cars.domain.Car;
+import academy.ws_work.modules.cars.mapper.CarMapper;
 import academy.ws_work.modules.cars.repository.CarRepository;
-import academy.ws_work.modules.cars.request.CarRequest;
-import academy.ws_work.modules.cars.request.CarResponse;
+import academy.ws_work.modules.cars.request.CarPost;
+import academy.ws_work.modules.cars.request.CarPut;
 import academy.ws_work.modules.factories.domain.Factory;
-import academy.ws_work.modules.factories.repository.FactoryRepository;
 import academy.ws_work.modules.factories.service.FactoryService;
 import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CarService {
 
     private final CarRepository carRepository;
     private final FactoryService factoryService;
-    private final FactoryRepository factoryRepository;
 
-    public CarResponse saveCars(CarRequest request){
-        validateFactoriId(request);
-        validateCarsDataInformed(request);
-        var factories = factoryService.findById(request.getFactoriesId());
-        var cars = carRepository.save(Car.of(request, factories));
-        return CarResponse.of(cars);
+
+    @Transactional
+    public Car save(CarPost carPost) {
+        validateFactoriId(carPost);
+        validateCarsDataInformed(carPost);
+        return carRepository.save(CarMapper.INSTANCE.toPost(carPost));
+    }
+    public Car findByIdOrThrowBadRequestException(Integer id){
+        return carRepository.findById(id)
+                .orElseThrow(()-> new ValidationException("Car Not found"));
+    }
+    public void delete(Integer id){
+        carRepository.delete(findByIdOrThrowBadRequestException(id));
     }
 
-    public CarResponse update(CarRequest request, Integer id){
-        validateInformedId(id);
-        var factories = factoryService.findById(request.getFactoriesId());
-        var cars = Car.of(request, factories);
-        cars.setId(id);
-        carRepository.save(cars);
-        return CarResponse.of(cars);
+    public Car findByModel(String model){
+        return carRepository.findByModelIgnoreCase(model).orElseThrow(
+                ()-> new ValidationException("There Car for given MODEL: " + model)
+        );
     }
 
-    public List<CarResponse> findAll(){
-        return carRepository.findAll()
-                .stream()
-                .map(CarResponse::of)
-                .collect(Collectors.toList());
+    public void update(CarPut carPut){
+        validateInformedId(carPut.getId());
+        Car savedCar = findByIdOrThrowBadRequestException(carPut.getId());
+        Car car = CarMapper.INSTANCE.toPut(carPut);
+        car.setId(savedCar.getId());
+        carRepository.save(car);
     }
 
-    public SuccessResponse delete(Integer id){
-        carRepository.deleteById(id);
-        return SuccessResponse.create("The Car was deleted: ");
+    public List<Car> findAll(){
+        return carRepository.findAll();
     }
+
 
     public String upload(MultipartFile file){
         try {
@@ -70,10 +75,11 @@ public class CarService {
             CsvParser parser = new CsvParser(settings);
             List<Record> parseAllRecords = parser.parseAllRecords(inputStream);
             parseAllRecords.forEach(record -> {
-                Factory factoryId = factoryService.findById(Integer.parseInt(record.getString("MARCA_ID")));
+                Factory factoryId = factoryService.findByIdOrThrowBadRequestException(
+                        Integer.parseInt(record.getString("MARCA_ID")));
                 Car build = Car.builder()
                         .id(Integer.parseInt(record.getString("ID")))
-                        .factoryId(factoryId)
+                        .factoryId(factoryId.getId())
                         .model(record.getString("MODELO"))
                         .year(Integer.parseInt(record.getString("ANO")))
                         .fuel(record.getString("COMBUSTIVEL"))
@@ -89,7 +95,8 @@ public class CarService {
         }
     }
 
-    private void validateCarsDataInformed(CarRequest request){
+
+    private void validateCarsDataInformed(CarPost request){
         if(isEmpty(request.getFuel())){
             throw new ValidationException("The Car fuel was not informed: ");
         }
@@ -106,17 +113,18 @@ public class CarService {
             throw new ValidationException("The Car Year was not informed: ");
         }
     }
-
-    private void validateFactoriId(CarRequest request){
-        if(isEmpty(request.getFactoriesId())){
+    private void validateFactoriId(CarPost request){
+        if(isEmpty(request.getFactoryId())){
             throw new ValidationException("The Factorie id was not informed: ");
         }
     }
-
     private void validateInformedId(Integer id){
         if (isEmpty(id)){
             throw new ValidationException("The Car ID was not informed: ");
         }
     }
+
+
+
 
 }

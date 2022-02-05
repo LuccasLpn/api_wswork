@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class JwtValidationFilter extends BasicAuthenticationFilter {
 
-
+    public static final String ATRIBUTO_PREFIXO = "Bearer ";
 
     public JwtValidationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -27,8 +27,14 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
         String atributo = request.getHeader("Authorization");
-        if (atributo != null && atributo.startsWith("Bearer ")){
-            chain.doFilter(request,response);
+
+        if (atributo == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if (!atributo.startsWith(ATRIBUTO_PREFIXO)) {
+            chain.doFilter(request, response);
             return;
         }
             String token = atributo.split(" ")[1].trim();
