@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CarPost {
 
-    private Integer id;
     private Integer factoryId;
     private String model;
     private String fuel;

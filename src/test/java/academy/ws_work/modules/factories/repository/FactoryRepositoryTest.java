@@ -1,7 +1,6 @@
 package academy.ws_work.modules.factories.repository;
 
 import academy.ws_work.modules.factories.domain.Factory;
-import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ class FactoryRepositoryTest {
 
     @Autowired
     private FactoryRepository factoryRepository;
-
 
 
     @Test
@@ -71,9 +69,5 @@ class FactoryRepositoryTest {
         List<Factory> name = this.factoryRepository.findByNameIgnoreCase("xaxaxaxa");
         Assertions.assertThat(name).isEmpty();
     }
-
-
-
-
 
 }

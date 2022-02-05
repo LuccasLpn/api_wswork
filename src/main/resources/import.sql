@@ -1,0 +1,1 @@
+INSERT INTO factory (id,name,countrycode) VALUES (1,"TOYOTA",55);

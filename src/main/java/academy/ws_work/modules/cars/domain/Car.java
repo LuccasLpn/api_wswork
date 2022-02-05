@@ -23,13 +23,10 @@ public class Car {
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "FACTORY_ID", insertable = false, updatable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "factory_id", referencedColumnName = "id")
     @JsonIgnore
     private Factory factory;
-
-    @Column(name = "FACTORY_ID", insertable = false, updatable = false)
-    private Integer factoryId;
 
     @Column(name = "MODELO")
     private String model;

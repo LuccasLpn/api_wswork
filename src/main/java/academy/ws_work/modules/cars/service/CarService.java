@@ -37,8 +37,12 @@ public class CarService {
     public Car save(CarPost carPost) {
         validateFactoriId(carPost);
         validateCarsDataInformed(carPost);
-        return carRepository.save(CarMapper.INSTANCE.toPost(carPost));
+        Factory factory = factoryService.findByIdOrThrowBadRequestException(carPost.getFactoryId());
+        Car car = CarMapper.INSTANCE.toPost(carPost);
+        car.setFactory(factory);
+        return carRepository.save(car);
     }
+
     public Car findByIdOrThrowBadRequestException(Integer id){
         return carRepository.findById(id)
                 .orElseThrow(()-> new ValidationException("Car Not found"));
@@ -79,7 +83,7 @@ public class CarService {
                         Integer.parseInt(record.getString("MARCA_ID")));
                 Car build = Car.builder()
                         .id(Integer.parseInt(record.getString("ID")))
-                        .factoryId(factoryId.getId())
+                        .factory(factoryId)
                         .model(record.getString("MODELO"))
                         .year(Integer.parseInt(record.getString("ANO")))
                         .fuel(record.getString("COMBUSTIVEL"))
