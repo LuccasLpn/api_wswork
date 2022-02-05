@@ -1,6 +1,6 @@
 package academy.ws_work.validation;
 
-import academy.ws_work.modules.cars.repository.CarsRepository;
+import academy.ws_work.modules.cars.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class Validation {
 
-    private final CarsRepository carsRepository;
+    private final CarRepository carRepository;
 
     public Boolean existsByFactorieId(Integer categoryId) {
-        return carsRepository.existsByFactoriesId(categoryId);
+        return carRepository.existsByFactoryId(categoryId);
     }
 
 }

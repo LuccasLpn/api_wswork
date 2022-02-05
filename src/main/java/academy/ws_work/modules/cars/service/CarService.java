@@ -2,84 +2,78 @@ package academy.ws_work.modules.cars.service;
 
 import academy.ws_work.exceptions.SuccessResponse;
 import academy.ws_work.exceptions.ValidationException;
-import academy.ws_work.modules.cars.domain.Cars;
-import academy.ws_work.modules.cars.repository.CarsRepository;
-import academy.ws_work.modules.cars.request.CarsRequest;
-import academy.ws_work.modules.cars.request.CarsResponse;
-import academy.ws_work.modules.factories.domain.Factories;
-import academy.ws_work.modules.factories.repository.FactoriesRepository;
-import academy.ws_work.modules.factories.service.FactoriesService;
+import academy.ws_work.modules.cars.domain.Car;
+import academy.ws_work.modules.cars.repository.CarRepository;
+import academy.ws_work.modules.cars.request.CarRequest;
+import academy.ws_work.modules.cars.request.CarResponse;
+import academy.ws_work.modules.factories.domain.Factory;
+import academy.ws_work.modules.factories.repository.FactoryRepository;
+import academy.ws_work.modules.factories.service.FactoryService;
 import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.fileupload.impl.IOFileUploadException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
 @RequiredArgsConstructor
-public class CarsService {
+public class CarService {
 
-    private final CarsRepository carsRepository;
-    private final FactoriesService factoriesService;
-    private final FactoriesRepository factoriesRepository;
+    private final CarRepository carRepository;
+    private final FactoryService factoryService;
+    private final FactoryRepository factoryRepository;
 
-    public CarsResponse saveCars(CarsRequest request){
+    public CarResponse saveCars(CarRequest request){
         validateFactoriId(request);
         validateCarsDataInformed(request);
-        var factories = factoriesService.findById(request.getFactoriesId());
-        var cars = carsRepository.save(Cars.of(request, factories));
-        return CarsResponse.of(cars);
+        var factories = factoryService.findById(request.getFactoriesId());
+        var cars = carRepository.save(Car.of(request, factories));
+        return CarResponse.of(cars);
     }
 
-    public CarsResponse update(CarsRequest request, Integer id){
+    public CarResponse update(CarRequest request, Integer id){
         validateInformedId(id);
-        var factories = factoriesService.findById(request.getFactoriesId());
-        var cars = Cars.of(request, factories);
+        var factories = factoryService.findById(request.getFactoriesId());
+        var cars = Car.of(request, factories);
         cars.setId(id);
-        carsRepository.save(cars);
-        return CarsResponse.of(cars);
+        carRepository.save(cars);
+        return CarResponse.of(cars);
     }
 
-    public List<CarsResponse> findAll(){
-        return carsRepository.findAll()
+    public List<CarResponse> findAll(){
+        return carRepository.findAll()
                 .stream()
-                .map(CarsResponse::of)
+                .map(CarResponse::of)
                 .collect(Collectors.toList());
     }
 
     public SuccessResponse delete(Integer id){
-        carsRepository.deleteById(id);
-        return SuccessResponse.create("The Cars was deleted: ");
+        carRepository.deleteById(id);
+        return SuccessResponse.create("The Car was deleted: ");
     }
 
     public String upload(MultipartFile file){
         try {
-            List<Cars> carList = new ArrayList<>();
+            List<Car> carList = new ArrayList<>();
             InputStream inputStream = file.getInputStream();
             CsvParserSettings settings = new CsvParserSettings();
             settings.setHeaderExtractionEnabled(true);
             CsvParser parser = new CsvParser(settings);
             List<Record> parseAllRecords = parser.parseAllRecords(inputStream);
             parseAllRecords.forEach(record -> {
-                Factories factoryId = factoriesService.findById(Integer.parseInt(record.getString("MARCA_ID")));
-                Cars build = Cars.builder()
+                Factory factoryId = factoryService.findById(Integer.parseInt(record.getString("MARCA_ID")));
+                Car build = Car.builder()
                         .id(Integer.parseInt(record.getString("ID")))
-                        .factoriesId(factoryId)
+                        .factoryId(factoryId)
                         .model(record.getString("MODELO"))
                         .year(Integer.parseInt(record.getString("ANO")))
                         .fuel(record.getString("COMBUSTIVEL"))
@@ -87,7 +81,7 @@ public class CarsService {
                         .cost(Double.valueOf(record.getString("VALOR_FIPE")))
                         .color(record.getString("COR")).build();
                 carList.add(build);
-                carsRepository.saveAll(carList);
+                carRepository.saveAll(carList);
             });
             return "Upload SuccessFull !!!";
         }catch (IOException e){
@@ -95,25 +89,25 @@ public class CarsService {
         }
     }
 
-    private void validateCarsDataInformed(CarsRequest request){
+    private void validateCarsDataInformed(CarRequest request){
         if(isEmpty(request.getFuel())){
-            throw new ValidationException("The Cars fuel was not informed: ");
+            throw new ValidationException("The Car fuel was not informed: ");
         }
         if(isEmpty(request.getColor())){
-            throw new ValidationException("The Cars Color was not informed: ");
+            throw new ValidationException("The Car Color was not informed: ");
         }
         if(isEmpty(request.getDoors())){
-            throw new ValidationException("The Cars Doors was not informed: ");
+            throw new ValidationException("The Car Doors was not informed: ");
         }
         if(isEmpty(request.getModel())){
-            throw new ValidationException("The Cars Model was not informed: ");
+            throw new ValidationException("The Car Model was not informed: ");
         }
         if(isEmpty(request.getYear())){
-            throw new ValidationException("The Cars Year was not informed: ");
+            throw new ValidationException("The Car Year was not informed: ");
         }
     }
 
-    private void validateFactoriId(CarsRequest request){
+    private void validateFactoriId(CarRequest request){
         if(isEmpty(request.getFactoriesId())){
             throw new ValidationException("The Factorie id was not informed: ");
         }
@@ -121,7 +115,7 @@ public class CarsService {
 
     private void validateInformedId(Integer id){
         if (isEmpty(id)){
-            throw new ValidationException("The Cars ID was not informed: ");
+            throw new ValidationException("The Car ID was not informed: ");
         }
     }
 

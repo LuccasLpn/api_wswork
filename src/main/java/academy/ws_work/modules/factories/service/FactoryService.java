@@ -3,10 +3,10 @@ package academy.ws_work.modules.factories.service;
 import academy.ws_work.exceptions.SuccessResponse;
 import academy.ws_work.exceptions.ValidationException;
 import academy.ws_work.validation.Validation;
-import academy.ws_work.modules.factories.domain.Factories;
-import academy.ws_work.modules.factories.repository.FactoriesRepository;
-import academy.ws_work.modules.factories.request.FactorieRequest;
-import academy.ws_work.modules.factories.request.FactorieResponse;
+import academy.ws_work.modules.factories.domain.Factory;
+import academy.ws_work.modules.factories.repository.FactoryRepository;
+import academy.ws_work.modules.factories.request.FactoryRequest;
+import academy.ws_work.modules.factories.request.FactoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,63 +17,63 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
 @RequiredArgsConstructor
-public class FactoriesService {
+public class FactoryService {
 
-    private final FactoriesRepository factoriesRepository;
+    private final FactoryRepository factoryRepository;
 
     private final Validation validation;
 
-    public FactorieResponse findByIdResponse(Integer id){
-       return FactorieResponse.of(findById(id));
+    public FactoryResponse findByIdResponse(Integer id){
+       return FactoryResponse.of(findById(id));
     }
 
-    public Factories findById(Integer id) {
+    public Factory findById(Integer id) {
         if(isEmpty(id)){
             throw new ValidationException("The Factorie ID was not informed: " + id);
         }
-        return factoriesRepository.findById(id)
+        return factoryRepository.findById(id)
                 .orElseThrow(()-> new ValidationException("There Factorie for given ID: " + id));
     }
 
-    public FactorieResponse saveFactorie(FactorieRequest request){
+    public FactoryResponse saveFactorie(FactoryRequest request){
         validateFactorieNameInforme(request);
-        var factories = factoriesRepository.save(Factories.of(request));
-        return FactorieResponse.of(factories);
+        var factories = factoryRepository.save(Factory.of(request));
+        return FactoryResponse.of(factories);
     }
-    public FactorieResponse update(FactorieRequest request, Integer id){
+    public FactoryResponse update(FactoryRequest request, Integer id){
         validateFactorieNameInforme(request);
-        var factories = Factories.of(request);
+        var factories = Factory.of(request);
         factories.setId(id);
-        factoriesRepository.save(factories);
-        return FactorieResponse.of(factories);
+        factoryRepository.save(factories);
+        return FactoryResponse.of(factories);
     }
 
     public SuccessResponse delete(Integer id){
         validateInformedId(id);
         if(validation.existsByFactorieId(id)){
-            throw new ValidationException("You cannot delete this Factorie because it's already defined by a Cars.");
+            throw new ValidationException("You cannot delete this Factorie because it's already defined by a Car.");
         }
-        factoriesRepository.deleteById(id);
+        factoryRepository.deleteById(id);
         return SuccessResponse.create("The Factorie was deleted");
     }
-    public List<FactorieResponse> findAll() {
-        return factoriesRepository
+    public List<FactoryResponse> findAll() {
+        return factoryRepository
                 .findAll()
                 .stream()
-                .map(FactorieResponse::of)
+                .map(FactoryResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public Factories findByName(String name){
+    public Factory findByName(String name){
         if (isEmpty(name)){
             throw new ValidationException("The Factorie Name must be informed: ");
         }
-        return factoriesRepository.findByNameIgnoreCase(name)
+        return factoryRepository.findByNameIgnoreCase(name)
                 .orElseThrow(()-> new ValidationException("There Factorie for given NAME: " + name));
 
     }
 
-    private void validateFactorieNameInforme(FactorieRequest request){
+    private void validateFactorieNameInforme(FactoryRequest request){
         if(isEmpty(request.getName())){
             throw new ValidationException("The Factorie name was not informed");
         }

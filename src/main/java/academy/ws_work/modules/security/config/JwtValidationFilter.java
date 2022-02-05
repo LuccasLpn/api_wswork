@@ -17,8 +17,6 @@ import java.util.ArrayList;
 
 public class JwtValidationFilter extends BasicAuthenticationFilter {
 
-    private static final String HEADER = "Authorization";
-    private static final String TOKEX_PREFIX = "Bearer";
 
 
     public JwtValidationFilter(AuthenticationManager authenticationManager) {
@@ -28,12 +26,8 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
-        String atributo = request.getHeader(HEADER);
-        if (atributo == null){
-            chain.doFilter(request,response);
-            return;
-        }
-        if (!atributo.startsWith(TOKEX_PREFIX)){
+        String atributo = request.getHeader("Authorization");
+        if (atributo != null && atributo.startsWith("Bearer ")){
             chain.doFilter(request,response);
             return;
         }
@@ -43,7 +37,7 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
             chain.doFilter(request, response);
     }
     private UsernamePasswordAuthenticationToken getAuthenticationToken(String token){
-        String user = JWT.require(Algorithm.HMAC512(JWTAuthenticationFilter.PASSWORD))
+        String user = JWT.require(Algorithm.HMAC512(JwtAuthenticationFilter.PASSWORD))
                 .build()
                 .verify(token)
                 .getSubject();

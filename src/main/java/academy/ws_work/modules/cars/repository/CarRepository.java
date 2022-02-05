@@ -1,12 +1,12 @@
 package academy.ws_work.modules.cars.repository;
 
-import academy.ws_work.modules.cars.domain.Cars;
+import academy.ws_work.modules.cars.domain.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CarsRepository extends JpaRepository <Cars,Integer> {
+public interface CarRepository extends JpaRepository <Car,Integer> {
 
-    Boolean existsByFactoriesId(Integer id);
+    Boolean existsByFactoryId(Integer id);
 
 }

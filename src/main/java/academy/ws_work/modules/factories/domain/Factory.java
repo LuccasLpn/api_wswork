@@ -1,7 +1,7 @@
 package academy.ws_work.modules.factories.domain;
 
 
-import academy.ws_work.modules.factories.request.FactorieRequest;
+import academy.ws_work.modules.factories.request.FactoryRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import javax.persistence.Id;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Factories {
+public class Factory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +25,8 @@ public class Factories {
     private Integer countrycode;
 
 
-    public static Factories of(FactorieRequest request){
-        var factories = new Factories();
+    public static Factory of(FactoryRequest request){
+        var factories = new Factory();
         BeanUtils.copyProperties(request,factories);
         return factories;
     }

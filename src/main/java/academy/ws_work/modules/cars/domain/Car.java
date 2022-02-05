@@ -1,22 +1,20 @@
 package academy.ws_work.modules.cars.domain;
 
-import academy.ws_work.modules.cars.request.CarsRequest;
-import academy.ws_work.modules.factories.domain.Factories;
+import academy.ws_work.modules.cars.request.CarRequest;
+import academy.ws_work.modules.factories.domain.Factory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-public class Cars {
+public class Car {
 
 
 
@@ -27,7 +25,7 @@ public class Cars {
 
     @ManyToOne
     @JoinColumn(name = "MARCA_ID", nullable = false)
-    private Factories factoriesId;
+    private Factory factoryId;
 
     @Column(name = "MODELO")
     private String model;
@@ -49,9 +47,9 @@ public class Cars {
 
 
 
-    public static Cars of(CarsRequest request, Factories factories){
-        return Cars.builder()
-                .factoriesId(factories)
+    public static Car of(CarRequest request, Factory factory){
+        return Car.builder()
+                .factoryId(factory)
                 .model(request.getModel())
                 .year(request.getYear())
                 .fuel(request.getFuel())

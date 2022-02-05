@@ -3,7 +3,7 @@ package academy.ws_work.modules.cars.request;
 import lombok.Data;
 
 @Data
-public class CarsRequest {
+public class CarRequest {
 
     private Integer factoriesId;
     private String model;

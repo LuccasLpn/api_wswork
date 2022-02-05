@@ -1,5 +1,6 @@
 package academy.ws_work.modules.security.config;
 
+import academy.ws_work.exceptions.ValidationException;
 import academy.ws_work.modules.security.domain.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
@@ -27,7 +28,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public static final String PASSWORD = "768b34fd-9a8b-4bb8-82a2-3f2bb679f0c1"; // COMO E APENAS DESENVOLVIMENTO COLOQUEI A SENHA AQUI, MAS EM PRODUÇÃO
                                                                                         // ELA NÃO PODE FICA AQUI
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
@@ -44,7 +45,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new ArrayList<>()
             ));
         } catch (IOException e) {
-            throw new RuntimeException("Failed Authentication User");
+            throw new ValidationException("Failed Authentication User");
         }
     }
 
