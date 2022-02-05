@@ -1,6 +1,5 @@
 package academy.ws_work.modules.factories.service;
 
-import academy.ws_work.exceptions.SuccessResponse;
 import academy.ws_work.exceptions.ValidationException;
 import academy.ws_work.modules.factories.mapper.FactoryMapper;
 import academy.ws_work.modules.factories.request.FactoryPost;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 

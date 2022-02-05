@@ -1,6 +1,5 @@
 package academy.ws_work.modules.factories.controller;
 
-import academy.ws_work.exceptions.SuccessResponse;
 import academy.ws_work.modules.factories.domain.Factory;
 import academy.ws_work.modules.factories.request.FactoryPost;
 import academy.ws_work.modules.factories.request.FactoryPut;
