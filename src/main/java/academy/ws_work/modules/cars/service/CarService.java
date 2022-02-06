@@ -36,9 +36,9 @@ public class CarService {
     public Car save(CarPost carPost) {
         validateFactoriId(carPost);
         validateCarsDataInformed(carPost);
-        //Factory factory = factoryService.findByIdOrThrowBadRequestException(carPost.getFactoryId());
+        Factory factory = factoryService.findByIdOrThrowBadRequestException(carPost.getFactoryId());
         Car car = CarMapper.INSTANCE.toPost(carPost);
-      //  car.setFactory(factory);
+        car.setFactory(factory);
         return carRepository.save(car);
     }
 
