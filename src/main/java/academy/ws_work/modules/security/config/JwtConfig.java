@@ -32,6 +32,7 @@ public class JwtConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtValidationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder);

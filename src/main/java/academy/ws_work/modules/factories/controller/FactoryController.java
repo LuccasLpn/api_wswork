@@ -28,7 +28,7 @@ public class FactoryController {
         factoryService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @PutMapping(path = "/replace")
+    @PutMapping(path = "/update")
     public ResponseEntity<Void> replace(@RequestBody FactoryPut factoryPut) {
         factoryService.replace(factoryPut);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

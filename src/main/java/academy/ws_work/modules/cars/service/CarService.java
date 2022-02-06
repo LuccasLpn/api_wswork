@@ -16,7 +16,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -37,9 +36,9 @@ public class CarService {
     public Car save(CarPost carPost) {
         validateFactoriId(carPost);
         validateCarsDataInformed(carPost);
-        Factory factory = factoryService.findByIdOrThrowBadRequestException(carPost.getFactoryId());
+        //Factory factory = factoryService.findByIdOrThrowBadRequestException(carPost.getFactoryId());
         Car car = CarMapper.INSTANCE.toPost(carPost);
-        car.setFactory(factory);
+      //  car.setFactory(factory);
         return carRepository.save(car);
     }
 
@@ -47,6 +46,8 @@ public class CarService {
         return carRepository.findById(id)
                 .orElseThrow(()-> new ValidationException("Car Not found"));
     }
+
+
     public void delete(Integer id){
         carRepository.delete(findByIdOrThrowBadRequestException(id));
     }
@@ -60,8 +61,10 @@ public class CarService {
     public void update(CarPut carPut){
         validateInformedId(carPut.getId());
         Car savedCar = findByIdOrThrowBadRequestException(carPut.getId());
+        Factory factory = factoryService.findByIdOrThrowBadRequestException(carPut.getFactoryId());
         Car car = CarMapper.INSTANCE.toPut(carPut);
         car.setId(savedCar.getId());
+        car.setFactory(factory);
         carRepository.save(car);
     }
 

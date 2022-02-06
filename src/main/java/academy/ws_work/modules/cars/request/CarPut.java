@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 public class CarPut {
 
+    private Integer factoryId;
     private Integer id;
     private String model;
     private Integer year;
